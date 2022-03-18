@@ -38,9 +38,10 @@ export class Api extends Construct {
     //==========================================================================
     // /recipes APIを作成
     const recipes = restApi.root.addResource("recipes");
-
+    // /recipes/{id} APIを作成
+    const recipe = recipes.addResource('{id}');
     //==========================================================================
-    // APIのメソッドにLambda関数を統合
+    // /recipes APIにLambda関数を統合
 
     // 新規レシピ登録関数をPOSTメソッドとして統合
     const postIntegration = new aws_apigateway.LambdaIntegration(
@@ -54,26 +55,22 @@ export class Api extends Construct {
     );
     recipes.addMethod("GET", getAllIntegration);
 
+    //==========================================================================
+    // /recipes/{id} APIにLambda関数を統合
+
     // 既存レシピ更新関数をPATCHメソッドとして統合
     const patchIntegration = new aws_apigateway.LambdaIntegration(
       props.patchFunction.function,
-      // {
-      //   requestParameters: {
-      //     'integration.request.path.id': 'method.request.path.id',
-      //   }
-      // }
     );
-    recipes.addMethod("PATCH", patchIntegration);
+    recipe.addMethod("PATCH", patchIntegration);
 
-    // 既存レシピ削除関数をPATCHメソッドとして統合
+    // レシピ取得関数をGETメソッドとして統合
+    // TODO IMPLEMENT
+
+    // 既存レシピ削除関数をDELETEメソッドとして統合
     const deleteIntegration = new aws_apigateway.LambdaIntegration(
       props.deleteFunction.function,
-      // {
-      //   requestParameters: {
-      //     'integration.request.path.id': 'method.request.path.id',
-      //   }
-      // }
     );
-    recipes.addMethod("DELETE", deleteIntegration);
+    recipe.addMethod("DELETE", deleteIntegration);
   }
 }
