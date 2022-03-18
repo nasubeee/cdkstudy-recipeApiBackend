@@ -5,11 +5,13 @@ import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import { ResourceName } from './resource_name';
 import { PostFunction } from './post_function';
 import { PatchFunction } from './patch_function';
+import { DeleteFunction } from './delete_function';
 
 export interface ApiProps {
   resourceName: ResourceName;
   postFunction: PostFunction;
   patchFunction: PatchFunction;
+  deleteFunction: DeleteFunction;
 }
 
 export class Api extends Construct {
@@ -49,5 +51,11 @@ export class Api extends Construct {
       props.patchFunction.function
     );
     recipes.addMethod("PATCH", patchIntegration);
+
+    // 既存レシピ削除関数をPATCHメソッドとして統合
+    const deleteIntegration = new aws_apigateway.LambdaIntegration(
+      props.deleteFunction.function
+    );
+    recipes.addMethod("DELETE", deleteIntegration);
   }
 }
