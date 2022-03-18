@@ -1,0 +1,64 @@
+from cmath import cos
+import boto3
+import logging
+import datetime
+import json
+import os
+import traceback
+
+# Create logger
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+# logger.setLevel(logging.ERROR)
+
+# Create dynamodb client
+dynamo_client = boto3.client('dynamodb')
+
+# Get environment variables
+TABLE_NAME = os.environ['TABLE_NAME']
+
+
+def deleteItem(id: str):
+    # TODO IMPLEMENT
+    pass
+
+
+def handler(event, context):
+    # Print received event
+    logger.info(f"{event=}")
+    try:
+        # get item info from event
+        item_data = json.loads(event['body'])
+        id = item_data['id'] # TODO FIX - get from URL
+        # delete item
+        deleteItem(id=id)
+
+    except Exception as err:
+        # error
+        logger.error('Function exception: %s', err)
+        return {
+            'statusCode': 200,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+                'Access-Control-Allow-Methods': 'OPTIONS,POST,PUT,GET,DELETE',
+            },
+            'body': json.dumps({
+                "message": "No Recipe found"
+            }),
+        }
+
+    # suceeded
+    return {
+        'statusCode': 200,
+        'headers': {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+            'Access-Control-Allow-Methods': 'OPTIONS,POST,PUT,GET,DELETE',
+        },
+        'body': json.dumps({
+            "message": "Recipe successfully removed!"
+        }),
+    }
