@@ -19,8 +19,13 @@ TABLE_NAME = os.environ['TABLE_NAME']
 
 
 def deleteItem(id: str):
-    # TODO IMPLEMENT
-    pass
+    dynamo_client.delete_item(
+        TableName=TABLE_NAME,
+        Key={
+            "id": {"S": id},
+        },
+        ConditionExpression='attribute_exists(id)'
+    )
 
 
 def handler(event, context):
