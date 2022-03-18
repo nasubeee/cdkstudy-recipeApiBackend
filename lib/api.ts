@@ -24,6 +24,7 @@ export class Api extends Construct {
         metricsEnabled: true,
       },
     });
+
     //==========================================================================
     // /recipes APIを作成
     const recipes = sampleApi.root.addResource("recipes");

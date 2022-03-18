@@ -1,3 +1,4 @@
+from cmath import cos
 import boto3
 import logging
 import datetime
@@ -7,8 +8,8 @@ import traceback
 
 # Create logger
 logger = logging.getLogger()
-# logger.setLevel(logging.INFO)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
+# logger.setLevel(logging.ERROR)
 
 # Create dynamodb client
 dynamo_client = boto3.client('dynamodb')
@@ -18,7 +19,7 @@ TABLE_NAME = os.environ['TABLE_NAME']
 
 
 def createNewItem(title: str, making_time: str, serves: str,
-                  ingredients: str, cost: str):
+                  ingredients: str, cost: int):
     # set id
     id = 0  # TODO FIX
     # set create date and update date
@@ -29,37 +30,38 @@ def createNewItem(title: str, making_time: str, serves: str,
     response = dynamo_client.put_item(
         TableName=TABLE_NAME,
         Item={
-            "id": {"S": id},
+            "id": {"S": str(id)},
             "title": {"S": title},
             "making_time": {"S": making_time},
             "serves": {"S": serves},
             "ingredients": {"S": ingredients},
-            "cost": {"S": cost},
+            "cost": {"S": str(cost)},
             "created_at": {"S": created_at},
             "updated_at": {"S": updated_at},
         },
         ConditionExpression='attribute_not_exists(id)'
     )
-    logging.debug(f"{response=}")
-    return response
+    logging.info(f"{response=}")
+    return id, created_at, updated_at
 
 
 def handler(event, context):
     # Print received event
-    logger.debug(f"{event=}")
+    logger.info(f"{event=}")
     try:
         # get item info from event
         item_data = json.loads(event['body'])
-        logger.debug(f"{item_data=}")
+        logger.info(f"{item_data=}")
         title = item_data['title']
         making_time = item_data['making_time']
         serves = item_data['serves']
         ingredients = item_data['ingredients']
         cost = item_data['cost']
         # create new item to the table
-        created_item = createNewItem(title=title, making_time=making_time,
-                                     serves=serves, ingredients=ingredients,
-                                     cost=cost)
+        id, created_at, updated_at = createNewItem(
+            title=title, making_time=making_time,
+            serves=serves, ingredients=ingredients,
+            cost=cost)
 
     except Exception as err:
         # error
@@ -81,7 +83,7 @@ def handler(event, context):
         }
 
     # suceeded
-    logger.debug(f"New item created. {created_item=}")
+    logger.info(f"New item created. {id=}, {created_at=}, {updated_at=}")
     return {
         'statusCode': 200,
         'headers': {
@@ -94,14 +96,14 @@ def handler(event, context):
             "message": "Recipe successfully created!",
             "recipe": [
                 {
-                    "id": created_item['id'],
-                    "title": created_item['title'],
-                    "making_time": created_item['making_time'],
-                    "serves": created_item['serves'],
-                    "ingredients": created_item['ingredients'],
-                    "cost": created_item['cost'],
-                    "created_at": created_item['created_at'],
-                    "updated_at": created_item['updated_at']
+                    "id": id,
+                    "title": title,
+                    "making_time": making_time,
+                    "serves": serves,
+                    "ingredients": ingredients,
+                    "cost": cost,
+                    "created_at": created_at,
+                    "updated_at": updated_at
                 }
             ]
         }),
