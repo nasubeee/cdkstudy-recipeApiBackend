@@ -1,4 +1,5 @@
 from cmath import cos
+from curses.ascii import TAB
 import boto3
 import logging
 import datetime
@@ -25,7 +26,7 @@ def convertToJson(items):
 
 def getAllItem():
     # get item
-    response = dynamo_client.scan()
+    response = dynamo_client.scan(TableName=TABLE_NAME)
     items = response['Items']
     logging.info(f"{items=}")
     return convertToJson(items)
