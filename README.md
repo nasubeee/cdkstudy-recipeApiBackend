@@ -1,3 +1,7 @@
+# Rest API 構築
+
+![Architecture](./doc/architecture.drawio.svg "Architecture")
+
 # Welcome to your CDK TypeScript project
 
 This is a blank project for TypeScript development with CDK.
