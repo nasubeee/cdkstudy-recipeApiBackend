@@ -4,6 +4,7 @@ import { ResourceName } from '../lib/resource_name';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as iam from 'aws-cdk-lib/aws-iam';
+import * as ssm from 'aws-cdk-lib/aws-ssm';
 
 export interface PostFunctionProps {
   resourceName: ResourceName;
@@ -14,6 +15,13 @@ export class PostFunction extends Construct {
   
   constructor(scope: Construct, id: string, props: PostFunctionProps) {
     super(scope, id);
+
+    //==========================================================================
+    // item Id管理用にインクリメントカウンタを作成し，0で初期化
+    const counter = new ssm.StringParameter(this, `increment-counter`, {
+      parameterName: props.resourceName.ssmParamName(`item-id-counter`),
+      stringValue: '0'
+    });
 
     //==========================================================================
     // Lambda FunctionのRoleを定義
@@ -27,6 +35,8 @@ export class PostFunction extends Construct {
       ]
     });
     props.table.grantReadWriteData(lambdaRole); // テーブルへの読み書き権限を追加
+    counter.grantRead(lambdaRole); // インクリメントカウンタの読み込み権限を追加
+    counter.grantWrite(lambdaRole); // インクリメントカウンタの書き込み権限を追加
 
     //==========================================================================
     // 新規レシピを登録するLambda Functionを作成する
@@ -38,7 +48,8 @@ export class PostFunction extends Construct {
       code: lambda.Code.fromAsset(path.join(__dirname, 'lambda')),
       role: lambdaRole,
       environment: {
-        'TABLE_NAME': props.table.tableName
+        'TABLE_NAME': props.table.tableName,
+        'COUNTER_NAME': counter.parameterName,
       }
     });
   }

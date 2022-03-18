@@ -11,17 +11,40 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 # logger.setLevel(logging.ERROR)
 
-# Create dynamodb client
+# Create dynamodb and ssm client
 dynamo_client = boto3.client('dynamodb')
+ssm_client = boto3.client('ssm')
 
 # Get environment variables
 TABLE_NAME = os.environ['TABLE_NAME']
+COUNTER_NAME = os.environ['COUNTER_NAME']
+
+
+def get_current_id_counter():
+    response = ssm_client.get_parameters(
+        Names=[
+            COUNTER_NAME,
+        ],
+        WithDecryption=True
+    )
+    return int(response['Parameters'][0]['Value'])
+
+
+def set_incremented_counter(incremented_counter):
+    response = ssm_client.put_parameter(
+        Name=COUNTER_NAME,
+        Value=str(incremented_counter),
+        Overwrite=True
+    )
 
 
 def createNewItem(title: str, making_time: str, serves: str,
                   ingredients: str, cost: int):
-    # set id
-    id = 0  # TODO FIX
+    # increment id
+    current_counter = get_current_id_counter()
+    id = current_counter + 1
+    set_incremented_counter(id)
+
     # set create date and update date
     created_datetime = datetime.datetime.now()
     created_at = created_datetime.strftime('%Y-%m-%d %H:%M:%S')
