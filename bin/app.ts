@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
-import { recipeAPIStack } from '../lib/recipeAPIStack';
+import { RecipeAPIStack } from '../lib/stack';
 import { ResourceName } from '../lib/resource_name';
 
 const app = new cdk.App();
@@ -19,7 +19,7 @@ const stackEnv = {
 
 //==============================================================================
 // スタックを作成
-const stack = new recipeAPIStack(app, 'APIStack', {
+const stack = new RecipeAPIStack(app, 'APIStack', {
   stackName: `${systemName}`,
   description: `challenge 6 recipe API backend.`,
   env: stackEnv,
