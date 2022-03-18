@@ -19,17 +19,12 @@ dynamo_client = boto3.client('dynamodb')
 TABLE_NAME = os.environ['TABLE_NAME']
 
 
-def convertToJson(items):
-    # TODO IMPLEMENT
-    return items
-
-
 def getAllItem():
     # get item
     response = dynamo_client.scan(TableName=TABLE_NAME)
     items = response['Items']
     logging.info(f"{items=}")
-    return convertToJson(items)
+    return items
 
 
 def handler(event, context):
