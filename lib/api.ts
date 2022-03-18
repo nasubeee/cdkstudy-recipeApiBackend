@@ -56,13 +56,23 @@ export class Api extends Construct {
 
     // 既存レシピ更新関数をPATCHメソッドとして統合
     const patchIntegration = new aws_apigateway.LambdaIntegration(
-      props.patchFunction.function
+      props.patchFunction.function,
+      // {
+      //   requestParameters: {
+      //     'integration.request.path.id': 'method.request.path.id',
+      //   }
+      // }
     );
     recipes.addMethod("PATCH", patchIntegration);
 
     // 既存レシピ削除関数をPATCHメソッドとして統合
     const deleteIntegration = new aws_apigateway.LambdaIntegration(
       props.deleteFunction.function,
+      // {
+      //   requestParameters: {
+      //     'integration.request.path.id': 'method.request.path.id',
+      //   }
+      // }
     );
     recipes.addMethod("DELETE", deleteIntegration);
   }
