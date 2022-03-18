@@ -43,7 +43,6 @@ def createNewItem(title: str, making_time: str, serves: str,
     # increment id
     current_counter = get_current_id_counter()
     id = current_counter + 1
-    set_incremented_counter(id)
 
     # set create date and update date
     created_datetime = datetime.datetime.now()
@@ -106,6 +105,8 @@ def handler(event, context):
 
     # suceeded
     logger.info(f"New item created. {id=}, {created_at=}, {updated_at=}")
+    # if succeeded, update increment counter
+    set_incremented_counter(id)
     return {
         'statusCode': 200,
         'headers': {
