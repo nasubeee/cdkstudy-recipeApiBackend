@@ -62,7 +62,7 @@ export class Api extends Construct {
 
     // 既存レシピ削除関数をPATCHメソッドとして統合
     const deleteIntegration = new aws_apigateway.LambdaIntegration(
-      props.deleteFunction.function
+      props.deleteFunction.function,
     );
     recipes.addMethod("DELETE", deleteIntegration);
   }

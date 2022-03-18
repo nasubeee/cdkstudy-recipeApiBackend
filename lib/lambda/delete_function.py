@@ -27,9 +27,8 @@ def handler(event, context):
     # Print received event
     logger.info(f"{event=}")
     try:
-        # get item info from event
-        item_data = json.loads(event['body'])
-        id = item_data['id'] # TODO FIX - get from URL
+        # get item id from path parameters
+        id = event['pathParameters']['id']
         # delete item
         deleteItem(id=id)
 
