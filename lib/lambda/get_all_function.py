@@ -32,18 +32,8 @@ def getAllItem():
 
 
 def handler(event, context):
-    # Print received event
-    logger.info(f"{event=}")
     try:
-        # get item info from event
-        item_data = json.loads(event['body'])
-        logger.info(f"{item_data=}")
-        title = item_data['title']
-        making_time = item_data['making_time']
-        serves = item_data['serves']
-        ingredients = item_data['ingredients']
-        cost = item_data['cost']
-        # create new item to the table
+        # get all item
         allItem = getAllItem()
 
     except Exception as err:
