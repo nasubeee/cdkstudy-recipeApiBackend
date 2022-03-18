@@ -5,6 +5,7 @@ import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import { ResourceName } from './resource_name';
 import { PostFunction } from './post_function';
 import { GetAllFunction } from './get_all_function';
+import { GetFunction } from './get_function';
 import { PatchFunction } from './patch_function';
 import { DeleteFunction } from './delete_function';
 
@@ -12,6 +13,7 @@ export interface ApiProps {
   resourceName: ResourceName;
   postFunction: PostFunction;
   getAllFunction: GetAllFunction;
+  getFunction: GetFunction;
   patchFunction: PatchFunction;
   deleteFunction: DeleteFunction;
 }
@@ -65,7 +67,10 @@ export class Api extends Construct {
     recipe.addMethod("PATCH", patchIntegration);
 
     // レシピ取得関数をGETメソッドとして統合
-    // TODO IMPLEMENT
+    const getIntegration = new aws_apigateway.LambdaIntegration(
+      props.getFunction.function,
+    );
+    recipe.addMethod("GET", getIntegration);
 
     // 既存レシピ削除関数をDELETEメソッドとして統合
     const deleteIntegration = new aws_apigateway.LambdaIntegration(

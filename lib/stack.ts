@@ -5,6 +5,7 @@ import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import { ResourceName } from './resource_name';
 import { PostFunction } from './post_function';
 import { GetAllFunction } from './get_all_function';
+import { GetFunction } from './get_function';
 import { PatchFunction } from './patch_function';
 import { DeleteFunction } from './delete_function';
 import { Api } from './api';
@@ -46,6 +47,13 @@ export class RecipeAPIStack extends Stack {
     });
 
     //==========================================================================
+    // 一つのitemを取得するLambda Functionを作成する
+    const getFunction = new GetFunction(this, `get-function`, {
+      resourceName: props.resourceName,
+      table: this.recipeDynamoTable
+    });
+    
+    //==========================================================================
     // 既存レシピを更新するLambda Functionを作成する
     const patchFunction = new PatchFunction(this, `patch-function`, {
       resourceName: props.resourceName,
@@ -65,6 +73,7 @@ export class RecipeAPIStack extends Stack {
       resourceName: props.resourceName,
       postFunction: postFunction,
       getAllFunction: getAllFunction,
+      getFunction: getFunction,
       patchFunction: patchFunction,
       deleteFunction: deleteFunction,
     });

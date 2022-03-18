@@ -58,8 +58,8 @@ def createNewItem(title: str, making_time: str, serves: str,
             "serves": {"S": serves},
             "ingredients": {"S": ingredients},
             "cost": {"S": str(cost)},
-            # "created_at": {"S": created_at},
-            # "updated_at": {"S": updated_at},
+            "created_at": {"S": created_at},
+            "updated_at": {"S": updated_at},
         },
     )
     logging.info(f"{response=}")
