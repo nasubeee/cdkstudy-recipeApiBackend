@@ -43,5 +43,11 @@ export class Api extends Construct {
       props.postFunction.function
     );
     recipes.addMethod("POST", postIntegration);
+
+    // 既存レシピ更新関数をPATCHメソッドとして統合
+    const patchIntegration = new aws_apigateway.LambdaIntegration(
+      props.patchFunction.function
+    );
+    recipes.addMethod("PATCH", patchIntegration);
   }
 }
