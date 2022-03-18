@@ -39,7 +39,6 @@ def createNewItem(title: str, making_time: str, serves: str,
             "created_at": {"S": created_at},
             "updated_at": {"S": updated_at},
         },
-        ConditionExpression='attribute_not_exists(id)'
     )
     logging.info(f"{response=}")
     return id, created_at, updated_at

@@ -9,14 +9,13 @@ export interface ApiProps {
 }
 
 export class Api extends Construct {
-  public restApi: aws_apigateway.RestApi;
 
   constructor(scope: Construct, id: string, props: ApiProps) {
     super(scope, id);
 
     //==========================================================================
     // API Gatewayを作成
-    const sampleApi = new aws_apigateway.RestApi(this, "rest-api", {
+    const restApi = new aws_apigateway.RestApi(this, "rest-api", {
       restApiName: `${props.resourceName.systemName}-api`,
       deployOptions: {
         loggingLevel: aws_apigateway.MethodLoggingLevel.INFO,
@@ -27,7 +26,7 @@ export class Api extends Construct {
 
     //==========================================================================
     // /recipes APIを作成
-    const recipes = sampleApi.root.addResource("recipes");
+    const recipes = restApi.root.addResource("recipes");
 
     //==========================================================================
     // APIのメソッドにLambda関数を統合
