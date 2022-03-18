@@ -4,10 +4,12 @@ import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 
 import { ResourceName } from './resource_name';
 import { PostFunction } from './post_function';
+import { PatchFunction } from './patch_function';
 
 export interface ApiProps {
   resourceName: ResourceName;
   postFunction: PostFunction;
+  patchFunction: PatchFunction;
 }
 
 export class Api extends Construct {
