@@ -26,7 +26,7 @@ export class GetAllFunction extends Construct {
         iam.ManagedPolicy.fromAwsManagedPolicyName(`service-role/AWSLambdaBasicExecutionRole`),
       ]
     });
-    props.table.grantReadWriteData(lambdaRole); // テーブルへの読み書き権限を追加
+    props.table.grantReadData(lambdaRole); // テーブルデータの読みこみ権限を追加
 
     //==========================================================================
     // 新規レシピを登録するLambda Functionを作成する
