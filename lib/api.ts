@@ -1,5 +1,7 @@
 import { aws_apigateway } from "aws-cdk-lib";
 import { Construct } from 'constructs';
+import * as apigateway from 'aws-cdk-lib/aws-apigateway';
+
 import { ResourceName } from './resource_name';
 import { PostFunction } from './post_function';
 
@@ -23,7 +25,10 @@ export class Api extends Construct {
         metricsEnabled: true,
       },
     });
-
+    restApi.addGatewayResponse('gateway-response', {
+      type: apigateway.ResponseType.DEFAULT_4XX,
+      statusCode: '404',
+    });
     //==========================================================================
     // /recipes APIを作成
     const recipes = restApi.root.addResource("recipes");
