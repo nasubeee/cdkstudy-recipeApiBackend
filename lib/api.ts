@@ -4,10 +4,12 @@ import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 
 import { ResourceName } from './resource_name';
 import { PostFunction } from './post_function';
+import { PatchFunction } from './patch_function';
 
 export interface ApiProps {
   resourceName: ResourceName;
   postFunction: PostFunction;
+  patchFunction: PatchFunction;
 }
 
 export class Api extends Construct {
@@ -41,5 +43,11 @@ export class Api extends Construct {
       props.postFunction.function
     );
     recipes.addMethod("POST", postIntegration);
+
+    // 既存レシピ更新関数をPATCHメソッドとして統合
+    const patchIntegration = new aws_apigateway.LambdaIntegration(
+      props.patchFunction.function
+    );
+    recipes.addMethod("PATCH", patchIntegration);
   }
 }
