@@ -28,9 +28,10 @@ def handler(event, context):
     # Print received event
     logger.info(f"{event=}")
     try:
+        # get item id from path parameters
+        id = event['pathParameters']['id']
         # get item info from event
         item_data = json.loads(event['body'])
-        id = item_data['id']
         new_title = item_data['title'] # TODO FIX IF NOT EXISTS
         new_making_time = item_data['making_time'] # TODO FIX IF NOT EXISTS
         new_serves = item_data['serves'] # TODO FIX IF NOT EXISTS
